@@ -1,0 +1,17 @@
+[
+  {
+    "id": "KB-REFUND-001",
+    "title": "Refund Policy",
+    "content": "Customers can request a refund for eligible orders within the applicable refund window. Refund eligibility must be checked using the order details and the ticket creation date."
+  },
+  {
+    "id": "KB-SHIPPING-001",
+    "title": "Shipping Policy",
+    "content": "Customers can request assistance for delayed shipments. Carrier investigation may be initiated when shipment tracking indicates a delivery problem."
+  },
+  {
+    "id": "KB-WARRANTY-001",
+    "title": "Warranty Policy",
+    "content": "Warranty claims are available for eligible products subject to the applicable warranty period and product category."
+  }
+]

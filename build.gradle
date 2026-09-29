@@ -16,13 +16,21 @@ java {
 repositories {
 	mavenCentral()
 }
+ext {
+    set('springAiVersion', "2.0.1")
+}
 
 dependencies {
-	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation platform("org.springframework.ai:spring-ai-bom:2.0.1")
+
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	implementation 'org.springframework.boot:spring-boot-starter-validation'
 	implementation 'org.springframework.boot:spring-boot-starter-webmvc'
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'
     implementation 'tools.jackson.core:jackson-databind'
+    implementation 'org.springframework.ai:spring-ai-starter-model-openai'
+    implementation 'org.springframework.ai:spring-ai-vector-store'
+
 
     runtimeOnly 'com.mysql:mysql-connector-j'
 	testImplementation 'org.springframework.boot:spring-boot-starter-data-jpa-test'
@@ -30,7 +38,11 @@ dependencies {
 	testImplementation 'org.springframework.boot:spring-boot-starter-webmvc-test'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 }
-
+dependencyManagement {
+    imports {
+        mavenBom "org.springframework.ai:spring-ai-bom:${springAiVersion}"
+    }
+}
 tasks.named('test') {
 	useJUnitPlatform()
 }
