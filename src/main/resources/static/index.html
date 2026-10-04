@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>TrustDesk - AI Support</title>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<!-- ======================================================
+     LEFT SIDEBAR
+====================================================== -->
+
+<aside class="sidebar">
+
+    <div class="sidebar-logo">
+        <h1>TrustDesk</h1>
+        <p>AI Support Operations</p>
+    </div>
+
+    <nav class="menu">
+
+        <button class="menu-item active"
+                onclick="showPage('dashboardPage', this)">
+            🏠
+            <span>Dashboard</span>
+        </button>
+
+        <button class="menu-item"
+                onclick="showPage('ticketsPage', this)">
+            🎫
+            <span>All Tickets</span>
+        </button>
+
+        <button class="menu-item"
+                onclick="showPage('customersPage', this)">
+            👤
+            <span>Customers</span>
+        </button>
+
+        <button class="menu-item"
+                onclick="showPage('ordersPage', this)">
+            📦
+            <span>Orders</span>
+        </button>
+
+        <button class="menu-item"
+                onclick="showPage('triagePage', this)">
+            🤖
+            <span>AI Triage</span>
+        </button>
+
+        <button class="menu-item"
+                onclick="showPage('knowledgePage', this)">
+            📚
+            <span>Knowledge Base</span>
+        </button>
+
+        <button class="menu-item"
+                onclick="showPage('actionsPage', this)">
+            ✅
+            <span>Actions / Approvals</span>
+        </button>
+
+    </nav>
+
+    <div class="sidebar-footer">
+        <div class="status-dot"></div>
+        AI Agent Online
+    </div>
+
+</aside>
+
+
+<!-- ======================================================
+     RIGHT SIDE
+====================================================== -->
+
+<main class="main-content">
+
+    <!-- Top Header -->
+
+    <header class="top-header">
+
+        <div>
+            <h2 id="pageTitle">Dashboard</h2>
+            <p id="pageSubtitle">
+                TrustDesk support operations
+            </p>
+        </div>
+
+        <div class="agent-status">
+            <span class="status-dot"></span>
+            System Online
+        </div>
+
+    </header>
+
+
+    <!-- ==================================================
+         DASHBOARD
+    ================================================== -->
+
+    <section id="dashboardPage" class="page">
+
+        <div class="welcome-card">
+
+            <h2>Welcome to TrustDesk</h2>
+
+            <p>
+                AI-powered customer support operations.
+                Select an option from the left menu to continue.
+            </p>
+
+        </div>
+
+        <div class="dashboard-grid">
+
+            <div class="dashboard-card">
+                <div class="dashboard-icon">🎫</div>
+                <h3>All Tickets</h3>
+                <p>View and manage customer support tickets.</p>
+
+                <button onclick="showPage('ticketsPage')">
+                    View Tickets
+                </button>
+            </div>
+
+
+            <div class="dashboard-card">
+                <div class="dashboard-icon">🤖</div>
+                <h3>AI Triage</h3>
+                <p>Analyze tickets using the AI support agent.</p>
+
+                <button onclick="showPage('triagePage')">
+                    Run Triage
+                </button>
+            </div>
+
+
+            <div class="dashboard-card">
+                <div class="dashboard-icon">📚</div>
+                <h3>Knowledge Base</h3>
+                <p>View grounded support knowledge.</p>
+
+                <button onclick="showPage('knowledgePage')">
+                    View Knowledge
+                </button>
+            </div>
+
+
+            <div class="dashboard-card">
+                <div class="dashboard-icon">✅</div>
+                <h3>Actions</h3>
+                <p>Review approval-gated customer actions.</p>
+
+                <button onclick="showPage('actionsPage')">
+                    View Actions
+                </button>
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- ==================================================
+         ALL TICKETS
+    ================================================== -->
+
+    <section id="ticketsPage" class="page hidden">
+
+        <div class="page-card">
+
+            <div class="page-card-header">
+
+                <div>
+                    <h2>All Tickets</h2>
+                    <p>Search and view customer support tickets.</p>
+                </div>
+
+                <button class="primary"
+                        onclick="loadAllTickets()">
+                    Refresh
+                </button>
+
+            </div>
+
+
+            <div class="ticket-search">
+
+                <input
+                        type="text"
+                        id="ticketSearch"
+                        placeholder="Search Ticket ID..."
+                >
+
+                <button onclick="loadAllTickets()">
+                    Search
+                </button>
+
+            </div>
+
+
+            <div id="ticketsList">
+
+                <p class="empty-message">
+                    Click Refresh to load tickets.
+                </p>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- ==================================================
+         CUSTOMERS
+    ================================================== -->
+
+    <section id="customersPage" class="page hidden">
+
+        <div class="page-card">
+
+            <h2>Customers</h2>
+
+            <p>
+                Customer information and support history.
+            </p>
+
+            <div id="customersList">
+
+                <p class="empty-message">
+                    Customer information will appear here.
+                </p>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- ==================================================
+         ORDERS
+    ================================================== -->
+
+    <section id="ordersPage" class="page hidden">
+
+        <div class="page-card">
+
+            <h2>Orders</h2>
+
+            <p>
+                Customer order and payment information.
+            </p>
+
+            <div id="ordersList">
+
+                <p class="empty-message">
+                    Order information will appear here.
+                </p>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- ==================================================
+         AI TRIAGE
+    ================================================== -->
+
+    <section id="triagePage" class="page hidden">
+
+        <!-- Ticket Selection -->
+
+        <div class="page-card">
+
+            <h2>AI Ticket Triage</h2>
+
+            <p>
+                Analyze a support ticket using the AI agent.
+            </p>
+
+            <div class="search-row">
+
+                <input
+                        type="text"
+                        id="ticketId"
+                        placeholder="Enter Ticket ID e.g. tkt_9001"
+                        value="tkt_9001"
+                >
+
+                <button onclick="loadTicket()">
+                    Load Ticket
+                </button>
+
+                <button
+                        class="primary"
+                        onclick="runTriage()">
+                    Run AI Triage
+                </button>
+
+            </div>
+
+        </div>
+
+
+        <!-- Loading -->
+
+        <div id="loading" class="loading hidden">
+            Processing...
+        </div>
+
+
+        <!-- Error -->
+
+        <div id="error" class="error hidden"></div>
+
+
+        <!-- Ticket Context -->
+
+        <section id="ticketSection" class="page-card hidden">
+
+            <h2>Ticket Context</h2>
+
+            <div class="grid">
+
+                <div>
+                    <label>Ticket ID</label>
+                    <p id="ticketIdDisplay"></p>
+                </div>
+
+                <div>
+                    <label>Status</label>
+                    <p id="ticketStatus"></p>
+                </div>
+
+                <div>
+                    <label>Channel</label>
+                    <p id="ticketChannel"></p>
+                </div>
+
+                <div>
+                    <label>Created At</label>
+                    <p id="ticketCreated"></p>
+                </div>
+
+            </div>
+
+            <div>
+                <label>Subject</label>
+                <p id="ticketSubject"></p>
+            </div>
+
+            <div>
+                <label>Customer Message</label>
+                <div class="message" id="ticketBody"></div>
+            </div>
+
+        </section>
+
+
+        <!-- Customer -->
+
+        <section id="customerSection" class="page-card hidden">
+
+            <h2>Customer</h2>
+
+            <div class="grid">
+
+                <div>
+                    <label>Name</label>
+                    <p id="customerName"></p>
+                </div>
+
+                <div>
+                    <label>Email</label>
+                    <p id="customerEmail"></p>
+                </div>
+
+                <div>
+                    <label>Tier</label>
+                    <p id="customerTier"></p>
+                </div>
+
+                <div>
+                    <label>Country</label>
+                    <p id="customerCountry"></p>
+                </div>
+
+                <div>
+                    <label>Verified</label>
+                    <p id="customerVerified"></p>
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- Order -->
+
+        <section id="orderSection" class="page-card hidden">
+
+            <h2>Order</h2>
+
+            <div class="grid">
+
+                <div>
+                    <label>Order ID</label>
+                    <p id="orderId"></p>
+                </div>
+
+                <div>
+                    <label>Status</label>
+                    <p id="orderStatus"></p>
+                </div>
+
+                <div>
+                    <label>Placed At</label>
+                    <p id="orderPlaced"></p>
+                </div>
+
+                <div>
+                    <label>Delivered At</label>
+                    <p id="orderDelivered"></p>
+                </div>
+
+                <div>
+                    <label>Eligible Return Until</label>
+                    <p id="orderReturn"></p>
+                </div>
+
+                <div>
+                    <label>Total</label>
+                    <p id="orderTotal"></p>
+                </div>
+
+                <div>
+                    <label>Payment Status</label>
+                    <p id="paymentStatus"></p>
+                </div>
+
+            </div>
+
+            <h3>Items</h3>
+
+            <div id="orderItems"></div>
+
+        </section>
+
+
+        <!-- AI Triage Result -->
+
+        <section id="triageSection" class="page-card hidden">
+
+            <h2>AI Triage Result</h2>
+
+            <div class="triage-grid">
+
+                <div class="result-box">
+                    <label>Category</label>
+                    <strong id="triageCategory"></strong>
+                </div>
+
+                <div class="result-box">
+                    <label>Priority</label>
+                    <strong id="triagePriority"></strong>
+                </div>
+
+                <div class="result-box">
+                    <label>Escalation</label>
+                    <strong id="triageEscalation"></strong>
+                </div>
+
+            </div>
+
+
+            <h3>Reasoning</h3>
+
+            <div
+                    class="text-box"
+                    id="triageReasoning">
+            </div>
+
+
+            <h3>Recommended Actions</h3>
+
+            <ul id="recommendedActions"></ul>
+
+
+            <h3>Grounded Draft Reply</h3>
+
+            <div
+                    class="draft-box"
+                    id="draftReply">
+            </div>
+
+
+            <h3>Knowledge Base Citations</h3>
+
+            <div id="citations"></div>
+
+        </section>
+
+    </section>
+
+
+    <!-- ==================================================
+         KNOWLEDGE BASE
+    ================================================== -->
+
+    <section id="knowledgePage" class="page hidden">
+
+        <div class="page-card">
+
+            <h2>Knowledge Base</h2>
+
+            <p>
+                Grounded support policies and reference documents.
+            </p>
+
+            <div class="kb-list">
+
+                <div class="kb-item">
+                    <strong>KB-REFUND-001</strong>
+                    <span>Refund Policy</span>
+                </div>
+
+                <div class="kb-item">
+                    <strong>KB-SHIPPING-001</strong>
+                    <span>Shipping Policy</span>
+                </div>
+
+                <div class="kb-item">
+                    <strong>KB-WARRANTY-001</strong>
+                    <span>Warranty Policy</span>
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- ==================================================
+         ACTIONS
+    ================================================== -->
+
+    <section id="actionsPage" class="page hidden">
+
+        <div class="page-card">
+
+            <h2>Actions / Approvals</h2>
+
+            <p>
+                Human approval is required before executing
+                customer-impacting actions.
+            </p>
+
+            <div class="approval-box">
+
+                <strong>No pending approvals</strong>
+
+                <p>
+                    Refund and replacement actions will appear
+                    here when approval is required.
+                </p>
+
+            </div>
+
+        </div>
+
+    </section>
+
+</main>
+
+
+<script src="app.js"></script>
+
+</body>
+</html>
+```

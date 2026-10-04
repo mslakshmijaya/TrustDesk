@@ -23,13 +23,27 @@ public class SimpleAuthFilter extends OncePerRequestFilter {
             FilterChain filterChain)
             throws ServletException, IOException {
 
+        String path = request.getServletPath();
+
+        // Allow frontend files
+        if (path.equals("/")
+                || path.equals("/index.html")
+                || path.equals("/app.js")
+                || path.equals("/style.css")) {
+
+            filterChain.doFilter(request, response);
+            return;
+        }
+
+        // Protect APIs
         String authorization =
                 request.getHeader("Authorization");
 
-        if (authorization == null ||
-                !authorization.equals("Bearer " + expectedToken)) {
+        if (authorization == null
+                || !authorization.equals(
+                "Bearer " + expectedToken)) {
 
-            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            response.setStatus(401);
             response.setContentType("application/json");
 
             response.getWriter().write(

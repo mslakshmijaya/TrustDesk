@@ -49,7 +49,7 @@ public class RagService {
         SearchRequest request = SearchRequest.builder()
                 .query(question)
                 .topK(5)
-                .similarityThreshold(0.50)
+                .similarityThreshold(0.30)
                 .build();
 
         return vectorStore.similaritySearch(request);
