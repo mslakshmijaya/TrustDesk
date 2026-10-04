@@ -233,62 +233,60 @@
 
             <form id="createTicketForm" onsubmit="createTicket(event)">
 
+                <!-- Customer Dropdown -->
                 <div class="form-group">
-                    <label for="newTicketId">Ticket ID</label>
-                    <input
-                            type="text"
-                            id="newTicketId"
-                            placeholder="TKT-1005"
-                            required>
-                </div>
+                    <label for="newCustomerId">Customer</label>
 
-                <div class="form-group">
-                    <label for="newCustomerId">Customer ID</label>
-                    <input
-                            type="text"
-                            id="newCustomerId"
-                            placeholder="CUST-001"
-                            required>
-                </div>
-
-                <div class="form-group">
-                    <label for="newOrderId">Order ID</label>
-                    <input
-                            type="text"
-                            id="newOrderId"
-                            placeholder="ORD-1001">
-                    <small>Optional</small>
-                </div>
-
-                <div class="form-group">
-                    <label for="newChannel">Channel</label>
-                    <select id="newChannel" required>
-                        <option value="">Select channel</option>
-                        <option value="EMAIL">Email</option>
-                        <option value="CHAT">Chat</option>
-                        <option value="PHONE">Phone</option>
-                        <option value="WEB">Web</option>
+                    <select id="newCustomerId" required>
+                        <option value="">Select Customer</option>
                     </select>
                 </div>
 
+                <!-- Order Dropdown -->
+                <div class="form-group">
+                    <label for="newOrderId">Order</label>
+
+                    <select id="newOrderId">
+                        <option value="">No Order</option>
+                    </select>
+                </div>
+
+                <!-- Channel Dropdown -->
+                <div class="form-group">
+                    <label for="newChannel">Channel</label>
+
+                    <select id="newChannel" required>
+                        <option value="">Select Channel</option>
+                        <option value="email">Email</option>
+                        <option value="chat">Chat</option>
+                        <option value="phone">Phone</option>
+                        <option value="web">Web</option>
+                    </select>
+                </div>
+
+                <!-- Subject -->
                 <div class="form-group">
                     <label for="newSubject">Subject</label>
+
                     <input
                             type="text"
                             id="newSubject"
-                            placeholder="Refund request"
+                            placeholder="Enter ticket subject"
                             required>
                 </div>
 
+                <!-- Message -->
                 <div class="form-group">
                     <label for="newBody">Customer Message</label>
+
                     <textarea
                             id="newBody"
                             rows="6"
-                            placeholder="Enter customer message..."
+                            placeholder="Enter customer message"
                             required></textarea>
                 </div>
 
+                <!-- Buttons -->
                 <div class="form-actions">
 
                     <button
