@@ -23,7 +23,14 @@ public class TicketController {
     public List<Ticket> getAllTickets() {
         return ticketService.getAllTickets();
     }
+    @PostMapping
+    public ResponseEntity<Ticket> createTicket(
+            @RequestBody Ticket ticket) {
 
+        Ticket savedTicket = ticketService.createTicket(ticket);
+
+        return ResponseEntity.ok(savedTicket);
+    }
     // GET /api/tickets/{ticketId}
     @GetMapping("/{ticketId}")
     public ResponseEntity<TicketContextResponse> getTicket(

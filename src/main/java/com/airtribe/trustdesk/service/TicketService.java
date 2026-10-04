@@ -31,7 +31,34 @@ public class TicketService {
     public List<Ticket> getAllTickets() {
         return ticketRepository.findAll();
     }
+    public Ticket createTicket(Ticket ticket) {
 
+        if (ticket.getCustomerId() == null || ticket.getCustomerId().isBlank()) {
+            throw new IllegalArgumentException("Customer ID is required");
+        }
+
+        if (ticket.getSubject() == null || ticket.getSubject().isBlank()) {
+            throw new IllegalArgumentException("Subject is required");
+        }
+
+        if (ticket.getBody() == null || ticket.getBody().isBlank()) {
+            throw new IllegalArgumentException("Ticket message is required");
+        }
+
+        String ticketId = generateTicketId();
+
+        ticket.setTicketId(ticketId);
+
+        if (ticket.getCreatedAt() == null) {
+            ticket.setCreatedAt(java.time.OffsetDateTime.now());
+        }
+
+        if (ticket.getStatus() == null || ticket.getStatus().isBlank()) {
+            ticket.setStatus("OPEN");
+        }
+
+        return ticketRepository.save(ticket);
+    }
     public TicketContextResponse getTicketContext(String ticketId) {
 
         Ticket ticket = ticketRepository.findById(ticketId)
@@ -55,5 +82,18 @@ public class TicketService {
                 customer,
                 order
         );
+    }
+    private String generateTicketId() {
+
+        long nextNumber = ticketRepository.count() + 1001;
+
+        String ticketId = "TKT-" + nextNumber;
+
+        while (ticketRepository.existsById(ticketId)) {
+            nextNumber++;
+            ticketId = "TKT-" + nextNumber;
+        }
+
+        return ticketId;
     }
 }

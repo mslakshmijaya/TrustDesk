@@ -182,7 +182,9 @@
                     <h2>All Tickets</h2>
                     <p>Search and view customer support tickets.</p>
                 </div>
-
+                <button class="primary" onclick="showCreateTicketForm()">
+                    + New Ticket
+                </button>
                 <button class="primary"
                         onclick="loadAllTickets()">
                     Refresh
@@ -218,7 +220,99 @@
 
     </section>
 
+    <section id="createTicketPage" class="page hidden">
 
+        <div class="page-card">
+
+            <div class="page-card-header">
+                <div>
+                    <h2>Create New Ticket</h2>
+                    <p>Create a customer support ticket.</p>
+                </div>
+            </div>
+
+            <form id="createTicketForm" onsubmit="createTicket(event)">
+
+                <div class="form-group">
+                    <label for="newTicketId">Ticket ID</label>
+                    <input
+                            type="text"
+                            id="newTicketId"
+                            placeholder="TKT-1005"
+                            required>
+                </div>
+
+                <div class="form-group">
+                    <label for="newCustomerId">Customer ID</label>
+                    <input
+                            type="text"
+                            id="newCustomerId"
+                            placeholder="CUST-001"
+                            required>
+                </div>
+
+                <div class="form-group">
+                    <label for="newOrderId">Order ID</label>
+                    <input
+                            type="text"
+                            id="newOrderId"
+                            placeholder="ORD-1001">
+                    <small>Optional</small>
+                </div>
+
+                <div class="form-group">
+                    <label for="newChannel">Channel</label>
+                    <select id="newChannel" required>
+                        <option value="">Select channel</option>
+                        <option value="EMAIL">Email</option>
+                        <option value="CHAT">Chat</option>
+                        <option value="PHONE">Phone</option>
+                        <option value="WEB">Web</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="newSubject">Subject</label>
+                    <input
+                            type="text"
+                            id="newSubject"
+                            placeholder="Refund request"
+                            required>
+                </div>
+
+                <div class="form-group">
+                    <label for="newBody">Customer Message</label>
+                    <textarea
+                            id="newBody"
+                            rows="6"
+                            placeholder="Enter customer message..."
+                            required></textarea>
+                </div>
+
+                <div class="form-actions">
+
+                    <button
+                            type="submit"
+                            class="primary">
+                        Create Ticket
+                    </button>
+
+                    <button
+                            type="button"
+                            class="secondary"
+                            onclick="showPage('ticketsPage')">
+                        Cancel
+                    </button>
+
+                </div>
+
+            </form>
+
+            <div id="createTicketMessage"></div>
+
+        </div>
+
+    </section>
     <!-- ==================================================
          CUSTOMERS
     ================================================== -->
@@ -227,18 +321,21 @@
 
         <div class="page-card">
 
-            <h2>Customers</h2>
+            <div class="page-card-header">
+                <div>
+                    <h2>Customers</h2>
+                    <p>Customer information and support details.</p>
+                </div>
 
-            <p>
-                Customer information and support history.
-            </p>
+                <button class="primary" onclick="loadCustomers()">
+                    Refresh
+                </button>
+            </div>
 
             <div id="customersList">
-
                 <p class="empty-message">
-                    Customer information will appear here.
+                    Click Refresh to load customers.
                 </p>
-
             </div>
 
         </div>
@@ -254,18 +351,21 @@
 
         <div class="page-card">
 
-            <h2>Orders</h2>
+            <div class="page-card-header">
+                <div>
+                    <h2>Orders</h2>
+                    <p>Customer orders and order items.</p>
+                </div>
 
-            <p>
-                Customer order and payment information.
-            </p>
+                <button class="primary" onclick="loadOrders()">
+                    Refresh
+                </button>
+            </div>
 
             <div id="ordersList">
-
                 <p class="empty-message">
-                    Order information will appear here.
+                    Click Refresh to load orders.
                 </p>
-
             </div>
 
         </div>
@@ -560,22 +660,23 @@
 
         <div class="page-card">
 
-            <h2>Actions / Approvals</h2>
+            <div class="page-card-header">
+                <div>
+                    <h2>Actions / Approvals</h2>
+                    <p>
+                        Available tools and human approval requirements.
+                    </p>
+                </div>
 
-            <p>
-                Human approval is required before executing
-                customer-impacting actions.
-            </p>
+                <button class="primary" onclick="loadTools()">
+                    Refresh
+                </button>
+            </div>
 
-            <div class="approval-box">
-
-                <strong>No pending approvals</strong>
-
-                <p>
-                    Refund and replacement actions will appear
-                    here when approval is required.
+            <div id="actionsList">
+                <p class="empty-message">
+                    Click Refresh to load available actions.
                 </p>
-
             </div>
 
         </div>

@@ -78,7 +78,10 @@ function showPage(pageId, menuButton = null) {
             title: "All Tickets",
             subtitle: "View and manage customer support tickets"
         },
-
+        createTicketPage: {
+            title: "Create New Ticket",
+            subtitle: "Create a customer support ticket"
+        },
         customersPage: {
             title: "Customers",
             subtitle: "Customer information and support history"
@@ -103,6 +106,8 @@ function showPage(pageId, menuButton = null) {
             title: "Actions / Approvals",
             subtitle: "Human approval for customer-impacting actions"
         }
+
+
 
     };
 
@@ -139,6 +144,24 @@ function showPage(pageId, menuButton = null) {
         loadAllTickets();
 
     }
+
+    if (pageId === "customersPage") {
+        if (typeof loadCustomers === "function") {
+            loadCustomers();
+        }
+    }
+
+    if (pageId === "ordersPage") {
+        if (typeof loadOrders === "function") {
+            loadOrders();
+        }
+    }
+
+    if (pageId === "actionsPage") {
+        if (typeof loadTools === "function") {
+            loadTools();
+        }
+    }
 }
 
 
@@ -154,7 +177,9 @@ function getHeaders() {
     };
 
 }
-
+function showCreateTicketForm() {
+    showPage("createTicketPage");
+}
 
 // ==========================================================
 // LOADING
@@ -313,7 +338,424 @@ async function loadAllTickets() {
     }
 
 }
+async function createTicket(event) {
 
+    event.preventDefault();
+
+    const message = document.getElementById("createTicketMessage");
+
+    message.innerHTML = "";
+
+    const ticket = {
+
+        customer_id: document.getElementById("newCustomerId").value.trim(),
+        order_id: document.getElementById("newOrderId").value.trim() || null,
+        channel: document.getElementById("newChannel").value,
+        subject: document.getElementById("newSubject").value.trim(),
+        body: document.getElementById("newBody").value.trim(),
+        status: "OPEN"
+    };
+
+    try {
+
+        const response = await fetch(
+            `${API_BASE}/api/tickets`,
+            {
+                method: "POST",
+                headers: getHeaders(),
+                body: JSON.stringify(ticket)
+            }
+        );
+
+        if (!response.ok) {
+
+            const errorText = await response.text();
+
+            throw new Error(
+                "Failed to create ticket. HTTP " +
+                response.status +
+                " " +
+                errorText
+            );
+        }
+
+        const createdTicket = await response.json();
+
+        message.innerHTML = `
+            <div class="success-message">
+                Ticket <strong>${createdTicket.ticket_id}</strong>
+                created successfully.
+            </div>
+        `;
+
+        document.getElementById("createTicketForm").reset();
+
+        setTimeout(function () {
+
+            showPage("ticketsPage");
+
+            if (typeof loadAllTickets === "function") {
+                loadAllTickets();
+            }
+
+        }, 1000);
+
+    } catch (error) {
+
+        message.innerHTML = `
+            <div class="error-message">
+                ${error.message}
+            </div>
+        `;
+    }
+}
+async function loadCustomers() {
+
+    const container = document.getElementById("customersList");
+
+    container.innerHTML = "<p>Loading customers...</p>";
+
+    try {
+
+        const response = await fetch(
+            `${API_BASE}/api/customers`,
+            {
+                method: "GET",
+                headers: getHeaders()
+            }
+        );
+
+        if (!response.ok) {
+            throw new Error(
+                "Failed to load customers. HTTP " +
+                response.status
+            );
+        }
+
+        const customers = await response.json();
+
+        if (!customers.length) {
+            container.innerHTML =
+                "<p class='empty-message'>No customers found.</p>";
+            return;
+        }
+
+        container.innerHTML = "";
+
+        customers.forEach(customer => {
+
+            const card = document.createElement("div");
+
+            card.className = "data-card";
+
+            card.innerHTML = `
+                <h3>${customer.name || "-"}</h3>
+
+                <p>
+                    <strong>Customer ID:</strong>
+                    ${customer.customer_id || customer.customerId || "-"}
+                </p>
+
+                <p>
+                    <strong>Email:</strong>
+                    ${customer.email || "-"}
+                </p>
+
+                <p>
+                    <strong>Tier:</strong>
+                    ${customer.tier || "-"}
+                </p>
+
+                <p>
+                    <strong>Country:</strong>
+                    ${customer.country || "-"}
+                </p>
+
+                <p>
+                    <strong>Verified:</strong>
+                    ${customer.verified ? "Yes" : "No"}
+                </p>
+
+                <p>
+                    <strong>Created:</strong>
+                    ${customer.createdAt || "-"}
+                </p>
+            `;
+
+            container.appendChild(card);
+        });
+
+    } catch (error) {
+
+        container.innerHTML =
+            `<p class="error-message">${error.message}</p>`;
+    }
+}
+
+async function loadOrders() {
+
+    const container = document.getElementById("ordersList");
+
+    container.innerHTML = "<p>Loading orders...</p>";
+
+    try {
+
+        const response = await fetch(
+            `${API_BASE}/api/orders`,
+            {
+                method: "GET",
+                headers: getHeaders()
+            }
+        );
+
+        if (!response.ok) {
+            throw new Error(
+                "Failed to load orders. HTTP " +
+                response.status
+            );
+        }
+
+        const orders = await response.json();
+
+        if (!orders.length) {
+            container.innerHTML =
+                "<p class='empty-message'>No orders found.</p>";
+            return;
+        }
+
+        container.innerHTML = "";
+
+        orders.forEach(order => {
+
+            const card = document.createElement("div");
+
+            card.className = "data-card";
+
+            const items = order.items || [];
+
+            let itemsHtml = "";
+
+            if (items.length > 0) {
+
+                itemsHtml = `
+                    <div class="order-items">
+                        <strong>Order Items</strong>
+                        <ul>
+                            ${items.map(item => `
+                                <li>
+                                    <strong>${item.name || "-"}</strong>
+                                    |
+                                    SKU: ${item.sku || "-"}
+                                    |
+                                    Quantity: ${item.quantity || 0}
+                                    |
+                                    Category: ${item.category || "-"}
+                                    |
+                                    Final Sale:
+                                    ${item.final_sale ? "Yes" : "No"}
+                                </li>
+                            `).join("")}
+                        </ul>
+                    </div>
+                `;
+
+            } else {
+
+                itemsHtml =
+                    "<p>No order items available.</p>";
+            }
+
+            card.innerHTML = `
+                <h3>
+                    Order ${order.order_id || "-"}
+                </h3>
+
+                <p>
+                    <strong>Customer ID:</strong>
+                    ${order.customer_id || "-"}
+                </p>
+
+                <p>
+                    <strong>Status:</strong>
+                    ${order.status || "-"}
+                </p>
+
+                <p>
+                    <strong>Total:</strong>
+                    ${order.total || "-"}
+                    ${order.currency || ""}
+                </p>
+
+                <p>
+                    <strong>Payment:</strong>
+                    ${order.payment_status || "-"}
+                </p>
+
+                <p>
+                    <strong>Placed:</strong>
+                    ${order.placed_at || "-"}
+                </p>
+
+                <p>
+                    <strong>Delivered:</strong>
+                    ${order.delivered_at || "-"}
+                </p>
+
+                <p>
+                    <strong>Return Eligible Until:</strong>
+                    ${order.eligible_return_until || "-"}
+                </p>
+
+                <p>
+                    <strong>Tracking:</strong>
+                    ${order.tracking_number || "-"}
+                </p>
+
+                ${itemsHtml}
+            `;
+
+            container.appendChild(card);
+        });
+
+    } catch (error) {
+
+        container.innerHTML =
+            `<p class="error-message">${error.message}</p>`;
+    }
+}
+
+
+async function loadOrders() {
+
+    const container = document.getElementById("ordersList");
+
+    container.innerHTML = "<p>Loading orders...</p>";
+
+    try {
+
+        const response = await fetch(
+            `${API_BASE}/api/orders`,
+            {
+                method: "GET",
+                headers: getHeaders()
+            }
+        );
+
+        if (!response.ok) {
+            throw new Error(
+                "Failed to load orders. HTTP " +
+                response.status
+            );
+        }
+
+        const orders = await response.json();
+
+        if (!orders.length) {
+            container.innerHTML =
+                "<p class='empty-message'>No orders found.</p>";
+            return;
+        }
+
+        container.innerHTML = "";
+
+        orders.forEach(order => {
+
+            const card = document.createElement("div");
+
+            card.className = "data-card";
+
+            const items = order.items || [];
+
+            let itemsHtml = "";
+
+            if (items.length > 0) {
+
+                itemsHtml = `
+                    <div class="order-items">
+                        <strong>Order Items</strong>
+                        <ul>
+                            ${items.map(item => `
+                                <li>
+                                    <strong>${item.name || "-"}</strong>
+                                    |
+                                    SKU: ${item.sku || "-"}
+                                    |
+                                    Quantity: ${item.quantity || 0}
+                                    |
+                                    Category: ${item.category || "-"}
+                                    |
+                                    Final Sale:
+                                    ${item.final_sale ? "Yes" : "No"}
+                                </li>
+                            `).join("")}
+                        </ul>
+                    </div>
+                `;
+
+            } else {
+
+                itemsHtml =
+                    "<p>No order items available.</p>";
+            }
+
+            card.innerHTML = `
+                <h3>
+                    Order ${order.order_id || "-"}
+                </h3>
+
+                <p>
+                    <strong>Customer ID:</strong>
+                    ${order.customer_id || "-"}
+                </p>
+
+                <p>
+                    <strong>Status:</strong>
+                    ${order.status || "-"}
+                </p>
+
+                <p>
+                    <strong>Total:</strong>
+                    ${order.total || "-"}
+                    ${order.currency || ""}
+                </p>
+
+                <p>
+                    <strong>Payment:</strong>
+                    ${order.payment_status || "-"}
+                </p>
+
+                <p>
+                    <strong>Placed:</strong>
+                    ${order.placed_at || "-"}
+                </p>
+
+                <p>
+                    <strong>Delivered:</strong>
+                    ${order.delivered_at || "-"}
+                </p>
+
+                <p>
+                    <strong>Return Eligible Until:</strong>
+                    ${order.eligible_return_until || "-"}
+                </p>
+
+                <p>
+                    <strong>Tracking:</strong>
+                    ${order.tracking_number || "-"}
+                </p>
+
+                ${itemsHtml}
+            `;
+
+            container.appendChild(card);
+        });
+
+    } catch (error) {
+
+        container.innerHTML =
+            `<p class="error-message">${error.message}</p>`;
+    }
+}
 
 // ==========================================================
 // DISPLAY ALL TICKETS
