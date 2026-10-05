@@ -45,17 +45,25 @@ public class TicketService {
             throw new IllegalArgumentException("Ticket message is required");
         }
 
-        String ticketId = generateTicketId();
-
-        ticket.setTicketId(ticketId);
-
-        if (ticket.getCreatedAt() == null) {
-            ticket.setCreatedAt(java.time.OffsetDateTime.now());
+        if (!customerRepository.existsById(ticket.getCustomerId())) {
+            throw new IllegalArgumentException(
+                    "Customer not found: " + ticket.getCustomerId()
+            );
         }
 
-        if (ticket.getStatus() == null || ticket.getStatus().isBlank()) {
-            ticket.setStatus("OPEN");
+        if (ticket.getOrderId() != null && !ticket.getOrderId().isBlank()) {
+            if (!orderRepository.existsById(ticket.getOrderId())) {
+                throw new IllegalArgumentException(
+                        "Order not found: " + ticket.getOrderId()
+                );
+            }
         }
+
+        ticket.setTicketId(generateTicketId());
+
+        ticket.setCreatedAt(java.time.OffsetDateTime.now());
+
+        ticket.setStatus("open");
 
         return ticketRepository.save(ticket);
     }
@@ -85,15 +93,16 @@ public class TicketService {
     }
     private String generateTicketId() {
 
-        long nextNumber = ticketRepository.count() + 1001;
+        String highestTicketId = ticketRepository.findHighestTicketId();
 
-        String ticketId = "TKT-" + nextNumber;
-
-        while (ticketRepository.existsById(ticketId)) {
-            nextNumber++;
-            ticketId = "TKT-" + nextNumber;
+        if (highestTicketId == null) {
+            return "tkt_9001";
         }
 
-        return ticketId;
+        String numberPart = highestTicketId.substring(4);
+
+        long nextNumber = Long.parseLong(numberPart) + 1;
+
+        return "tkt_" + nextNumber;
     }
 }

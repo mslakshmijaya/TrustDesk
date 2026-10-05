@@ -178,13 +178,74 @@ function getHeaders() {
 
 }
 function showCreateTicketForm() {
+
     showPage("createTicketPage");
+
+    loadCustomersForTicketForm();
 }
 
 // ==========================================================
 // LOADING
 // ==========================================================
+document
+    .getElementById("newCustomerId")
+    .addEventListener("change", async function () {
 
+        const customerId = this.value;
+
+        const orderSelect =
+            document.getElementById("newOrderId");
+
+        orderSelect.innerHTML =
+            `<option value="">No Order</option>`;
+
+        if (!customerId) {
+            return;
+        }
+
+        try {
+
+            const response = await fetch(
+                `${API_BASE}/api/orders`,
+                {
+                    method: "GET",
+                    headers: getHeaders()
+                }
+            );
+
+            if (!response.ok) {
+                throw new Error("Failed to load orders");
+            }
+
+            const orders = await response.json();
+
+            const customerOrders =
+                orders.filter(
+                    order =>
+                        order.customer_id === customerId
+                );
+
+            customerOrders.forEach(order => {
+
+                const option =
+                    document.createElement("option");
+
+                option.value = order.order_id;
+
+                option.textContent =
+                    `${order.order_id} - ${order.status} - ${order.total} ${order.currency}`;
+
+                orderSelect.appendChild(option);
+            });
+
+        } catch (error) {
+
+            console.error(
+                "Unable to load customer orders:",
+                error
+            );
+        }
+    });
 function showLoading(show) {
 
     const loading =
@@ -342,18 +403,28 @@ async function createTicket(event) {
 
     event.preventDefault();
 
-    const message = document.getElementById("createTicketMessage");
+    const message =
+        document.getElementById("createTicketMessage");
 
     message.innerHTML = "";
 
     const ticket = {
+        customer_id:
+            document.getElementById("newCustomerId").value,
 
-        customer_id: document.getElementById("newCustomerId").value.trim(),
-        order_id: document.getElementById("newOrderId").value.trim() || null,
-        channel: document.getElementById("newChannel").value,
-        subject: document.getElementById("newSubject").value.trim(),
-        body: document.getElementById("newBody").value.trim(),
-        status: "OPEN"
+        order_id:
+            document.getElementById("newOrderId").value || null,
+
+        channel:
+            document.getElementById("newChannel").value,
+
+        subject:
+            document.getElementById("newSubject").value.trim(),
+
+        body:
+            document.getElementById("newBody").value.trim(),
+
+        status: "open"
     };
 
     try {
@@ -374,7 +445,7 @@ async function createTicket(event) {
             throw new Error(
                 "Failed to create ticket. HTTP " +
                 response.status +
-                " " +
+                " - " +
                 errorText
             );
         }
@@ -383,14 +454,17 @@ async function createTicket(event) {
 
         message.innerHTML = `
             <div class="success-message">
-                Ticket <strong>${createdTicket.ticket_id}</strong>
+                Ticket
+                <strong>${createdTicket.ticket_id}</strong>
                 created successfully.
             </div>
         `;
 
-        document.getElementById("createTicketForm").reset();
+        document
+            .getElementById("createTicketForm")
+            .reset();
 
-        setTimeout(function () {
+        setTimeout(() => {
 
             showPage("ticketsPage");
 
@@ -407,6 +481,51 @@ async function createTicket(event) {
                 ${error.message}
             </div>
         `;
+    }
+}
+async function loadCustomersForTicketForm() {
+
+    const customerSelect =
+        document.getElementById("newCustomerId");
+
+    customerSelect.innerHTML =
+        `<option value="">Select Customer</option>`;
+
+    try {
+
+        const response = await fetch(
+            `${API_BASE}/api/customers`,
+            {
+                method: "GET",
+                headers: getHeaders()
+            }
+        );
+
+        if (!response.ok) {
+            throw new Error("Failed to load customers");
+        }
+
+        const customers = await response.json();
+
+        customers.forEach(customer => {
+
+            const option =
+                document.createElement("option");
+
+            option.value = customer.customer_id;
+
+            option.textContent =
+                `${customer.customer_id} - ${customer.name}`;
+
+            customerSelect.appendChild(option);
+        });
+
+    } catch (error) {
+
+        console.error(
+            "Unable to load customers:",
+            error
+        );
     }
 }
 async function loadCustomers() {
